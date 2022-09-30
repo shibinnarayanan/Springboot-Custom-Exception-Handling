@@ -33,14 +33,28 @@ public class EmployeeController {
 			ControllerException ce = new ControllerException(e.getErrorCode(),e.getErrorMessage());
 			return new ResponseEntity<ControllerException>(ce,HttpStatus.BAD_REQUEST);
 		}
+		catch (Exception e) {
+			ControllerException ce = new ControllerException("1004","Something went wrong in controller");
+			return new ResponseEntity<ControllerException>(ce,HttpStatus.BAD_REQUEST);
+		}
 		
 	}
 	
 	@GetMapping("/all")
 	ResponseEntity<?> getAllEmployee()
 	{
-		List<Employee> empList = EmpService.getAllEmployee();
-		return new ResponseEntity<>(empList,HttpStatus.OK);
+		try {
+			List<Employee> empList = EmpService.getAllEmployee();
+			return new ResponseEntity<>(empList,HttpStatus.OK);
+		} catch (BusinessException e) {
+			ControllerException ctrlExc = new ControllerException(e.getErrorCode(),e.getErrorMessage());
+			return new ResponseEntity<>(ctrlExc, HttpStatus.BAD_REQUEST);
+		}
+		catch (Exception e) {
+			ControllerException ce = new ControllerException("1004","Something went wrong in controller");
+			return new ResponseEntity<ControllerException>(ce,HttpStatus.BAD_REQUEST);
+		}
+		
 	}
 	@GetMapping("/all/{id}")
 	ResponseEntity<?> getEmployeeById(@PathVariable("id") Long id)
